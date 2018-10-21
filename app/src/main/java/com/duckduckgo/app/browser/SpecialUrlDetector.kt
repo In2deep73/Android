@@ -77,7 +77,7 @@ class SpecialUrlDetectorImpl(private val context: Context) : SpecialUrlDetector 
             val activities = pm.queryIntentActivities(intent, 0)
 
             Timber.i("Found ${activities.size} that could consume $uriString")
-            return if(activities.size == 0){
+            return if(activities.size == 0 && fallbackUrl == null){
                 UrlType.SearchQuery(uriString)
             } else {
                 UrlType.IntentType(url = uriString, intent = intent, fallbackUrl = fallbackUrl)
