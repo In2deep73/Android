@@ -158,7 +158,7 @@ class BrowserTabViewModelTest {
             longPressHandler = mockLongPressHandler,
             appConfigurationDao = appConfigurationDao,
             webViewSessionStorage = webViewSessionStorage,
-            specialUrlDetector = SpecialUrlDetectorImpl(),
+            specialUrlDetector = SpecialUrlDetectorImpl(context = InstrumentationRegistry.getTargetContext()),
             faviconDownloader = mockFaviconDownloader,
             addToHomeCapabilityDetector = mockAddToHomeCapabilityDetector
         )

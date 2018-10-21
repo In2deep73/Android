@@ -77,7 +77,7 @@ class BrowserModule {
     }
 
     @Provides
-    fun specialUrlDetector(): SpecialUrlDetector = SpecialUrlDetectorImpl()
+    fun specialUrlDetector(context: Context): SpecialUrlDetector = SpecialUrlDetectorImpl(context)
 
     @Provides
     fun webViewRequestInterceptor(

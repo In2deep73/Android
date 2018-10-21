@@ -16,6 +16,7 @@
 
 package com.duckduckgo.app.browser
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.duckduckgo.app.browser.SpecialUrlDetector.UrlType
@@ -38,7 +39,7 @@ interface SpecialUrlDetector {
 
 }
 
-class SpecialUrlDetectorImpl : SpecialUrlDetector {
+class SpecialUrlDetectorImpl(private val context: Context) : SpecialUrlDetector {
 
     override fun determineType(uri: Uri): UrlType {
         val uriString = uri.toString()
@@ -68,10 +69,19 @@ class SpecialUrlDetectorImpl : SpecialUrlDetector {
     private fun buildSmsTo(uriString: String) = UrlType.Sms(uriString.removePrefix("$SMSTO_SCHEME:"))
 
     private fun buildIntent(uriString: String): UrlType {
-        return try {
+        try {
             val intent = Intent.parseUri(uriString, 0)
             val fallbackUrl = intent.getStringExtra(EXTRA_FALLBACK_URL)
-            UrlType.IntentType(url = uriString, intent = intent, fallbackUrl = fallbackUrl)
+
+            val pm = context.packageManager
+            val activities = pm.queryIntentActivities(intent, 0)
+
+            Timber.i("Found ${activities.size} that could consume $uriString")
+            return if(activities.size == 0){
+                UrlType.SearchQuery(uriString)
+            } else {
+                UrlType.IntentType(url = uriString, intent = intent, fallbackUrl = fallbackUrl)
+            }
         } catch (e: URISyntaxException) {
             Timber.w(e, "Failed to parse uri $uriString")
             return UrlType.Unknown(uriString)

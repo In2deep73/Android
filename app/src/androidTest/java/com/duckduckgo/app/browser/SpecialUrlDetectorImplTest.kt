@@ -16,6 +16,7 @@
 
 package com.duckduckgo.app.browser
 
+import android.support.test.InstrumentationRegistry
 import com.duckduckgo.app.browser.SpecialUrlDetector.UrlType.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -27,7 +28,7 @@ class SpecialUrlDetectorImplTest {
 
     @Before
     fun setup() {
-        testee = SpecialUrlDetectorImpl()
+        testee = SpecialUrlDetectorImpl(context = InstrumentationRegistry.getTargetContext())
     }
 
     @Test
